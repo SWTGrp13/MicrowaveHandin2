@@ -4,11 +4,11 @@ using NUnit.Framework;
 namespace Microwave.Test.Integration
 {
     [TestFixture]
-    public class OutputPowerTubeTest
+    public class Class1
     {
         [Test]
-        public void TestForJenkins() {
-            Assert.That(true, Is.EqualTo(true));
+        public void YesAndYes() {
+            Assert.That(true,Is.True);
         }
     }
 }
