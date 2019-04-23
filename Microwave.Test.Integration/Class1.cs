@@ -9,6 +9,7 @@ namespace Microwave.Test.Integration
         [Test]
         public void YesAndYes() {
             Assert.That(true,Is.True);
+
         }
     }
 }
