@@ -24,6 +24,12 @@ namespace MicrowaveOvenClasses.Boundary
 
         public void Start(int time)
         {
+            // time shall be a positive number $MSS
+            if (time < 0)
+            {
+                throw new ArgumentOutOfRangeException("time", time, "Must be a positive number");
+            }
+
             TimeRemaining = time;
             timer.Enabled = true;
         }

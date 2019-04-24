@@ -89,5 +89,10 @@ namespace Microwave.Test.Unit
             Assert.That(notifications, Is.EqualTo(2));
         }
 
+        [Test]
+        public void Timer_Start_Throw_Execetion_On_Negative()
+        {
+            Assert.That(() => uut.Start(-1000), Throws.Exception);
+        }
     }
 }

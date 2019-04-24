@@ -81,6 +81,13 @@ namespace Microwave.Test.Integrations
         {
             Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Exception);
         }
+
+        // move to testcase 3
+        //[TestCase(40, -1500)]
+        //public void testCookControllerNegativeTimeThrowsException(int power, int time)
+        //{
+        //    Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Exception);
+        //}
     }
 
 }
