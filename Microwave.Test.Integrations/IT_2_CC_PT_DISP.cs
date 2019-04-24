@@ -18,7 +18,6 @@ namespace Microwave.Test.Integrations
         private PowerTube _uut_pt;
         private CookController _uut_cc;
 
-
         [SetUp]
         public void sut_initalize()
         {
@@ -58,7 +57,6 @@ namespace Microwave.Test.Integrations
             _uut_output.Received().OutputLine("PowerTube turned off");
         }
 
-    
         [TestCase(40, 1000)]
         public void testCookControllerDoubleStartThrowsException(int power, int time)
         {
@@ -82,12 +80,6 @@ namespace Microwave.Test.Integrations
             Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Exception);
         }
 
-        // move to testcase 3
-        //[TestCase(40, -1500)]
-        //public void testCookControllerNegativeTimeThrowsException(int power, int time)
-        //{
-        //    Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Exception);
-        //}
     }
 
 }
