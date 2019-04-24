@@ -6,8 +6,8 @@ namespace MicrowaveOvenClasses.Boundary
     public class PowerTube : IPowerTube
     {
         private IOutput myOutput;
-
-        private bool IsOn = false;
+        // ændret af Mikkel, ellers kan der ikke testes i intregrations testen
+        public bool IsOn = false;
 
         public PowerTube(IOutput output)
         {
