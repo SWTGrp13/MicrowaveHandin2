@@ -62,12 +62,14 @@
   <ItemGroup>
     <Compile Include="IT1_CookControl_PowerTube.cs" />
     <Compile Include="IT6_UI_Downwards.cs" />
+    <Compile Include="IT8_BtnTop_NoStubs.cs" />
     <Compile Include="IT_2_CC_PT_DISP.cs" />
     <Compile Include="IT4_UI_Display.cs" />
     <Compile Include="IT_3_CookControl_PowerTube_Display_Timer.cs" />
     <Compile Include="IT_5_UI_Display_Light.cs" />
     <Compile Include="IT_7_BtnIsTop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IT9_DoorIsTop.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
