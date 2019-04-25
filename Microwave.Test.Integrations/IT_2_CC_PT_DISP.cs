@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
@@ -31,19 +32,19 @@ namespace Microwave.Test.Integrations
             _uut_cc = new CookController(_uut_time, _uut_display, _uut_pt);
         }
        
+       
         [TestCase(50, 1000)]
-        [TestCase(70, 2000)]
         public void TestCookControllerAndDisplay(int power, int time)
         {
             _uut_cc.StartCooking(power, time);
 
             _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
+         
+            _uut_time.TimerTick += Raise.Event();
 
-            var span = TimeSpan.FromSeconds(time);
+            _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: 00:00")));
 
-            _uut_display.ShowTime(span.Minutes, span.Seconds);
 
-            _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: {time/60}:{time%60}")));
         }
 
         [TestCase(70, 2000)]
@@ -56,31 +57,7 @@ namespace Microwave.Test.Integrations
             _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
         }
 
-        [TestCase(40, 1000)]
-        public void testCookControllerDoubleStartThrowsException(int power, int time)
-        {
-            _uut_cc.StartCooking(power, time);
-
-            Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Exception);
-        }
-
-        [TestCase(10, 1000)]
-        [TestCase(70, 1000)]
-        public void testCookControllerStartStopStartDoesNotThrowException(int power, int time)
-        {
-            _uut_cc.StartCooking(power, time);
-
-            _uut_cc.Stop();
-
-            Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Nothing);
-        }
-
-        [TestCase(-40, 1000)]
-        public void testCookControllerNegativePowerThrowsException(int power, int time)
-        {
-            Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Exception);
-        }
-
+       
     }
 
 }
