@@ -44,7 +44,8 @@ namespace Microwave.Test.Integrations
 
 
             _display = new Display(_output);
-            _uut = new UserInterface(_buttonPower,_buttonTime,_buttonStartCancel,_door,_display,_light,_cookController);
+            _uut = new UserInterface(_buttonPower,_buttonTime,
+                _buttonStartCancel,_door,_display,_light,_cookController);
         }
         #endregion
 
@@ -56,7 +57,8 @@ namespace Microwave.Test.Integrations
             //State is READY
             _uut.OnPowerPressed(this,EventArgs.Empty);
 
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"Display shows:")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Contains($"Display shows:")));
 
         }
 
@@ -68,7 +70,8 @@ namespace Microwave.Test.Integrations
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
 
             _uut.OnPowerPressed(this,EventArgs.Empty);
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"Display shows:")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Contains($"Display shows:")));
             //Assert output Power $"Display shows: {power} W"
         }
         #endregion
@@ -85,7 +88,7 @@ namespace Microwave.Test.Integrations
             {
                 _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
             }
-
+          
             _uut.OnTimePressed(this, EventArgs.Empty);
 
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: {time:D2}:{0:D2}")));
@@ -122,8 +125,9 @@ namespace Microwave.Test.Integrations
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
 
-            _uut.OnStartCancelPressed(this,EventArgs.Empty);
+            _output.ClearReceivedCalls();
 
+            _uut.OnStartCancelPressed(this,EventArgs.Empty);
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display cleared")));
             //Assert output Power $"Display cleared"
         }
@@ -136,8 +140,9 @@ namespace Microwave.Test.Integrations
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
             _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
 
-            _uut.OnStartCancelPressed(this, EventArgs.Empty);
+            _output.ClearReceivedCalls();
 
+            _uut.OnStartCancelPressed(this, EventArgs.Empty);
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display cleared")));
             //Assert output Power $"Display cleared"
         }
@@ -150,6 +155,7 @@ namespace Microwave.Test.Integrations
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
             _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
 
+            _output.ClearReceivedCalls();
 
             _uut.OnStartCancelPressed(this,EventArgs.Empty);
             _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"Display cleared")));
@@ -159,36 +165,38 @@ namespace Microwave.Test.Integrations
 
         #region OnDoorOpened
 
+
         [Test]
-        public void OnDoorOpened_Ready()
-        {
-            //PowerPressed State READY
-            //Assert output Power $"Display cleared"
-        }
         public void OnDoorOpened_SetPower()
         {
-            //PowerPressed State SETPOWER
+            //Set state to SETPOWER
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _uut.OnDoorOpened(this,EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Display cleared")));
             //Assert output Power $"Display cleared"
         }
 
+        [Test]
         public void OnDoorOpened_SetTime()
         {
-            //PowerPressed State SETTIME
+            //Set state to SETTIME
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _uut.OnDoorOpened(this, EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Display cleared")));
             //Assert output Power $"Display cleared"
         }
 
         #endregion
 
-        #region OnDoorClosed
-
-        public void OnDoorClosed_DoorOpen()
-        {
-            _door.Opened += Raise.EventWith(this, EventArgs.Empty);
-            //PowerPressed State DOOROPEN
-            //Assert output Power $"Display cleared"
-        }
-
-        #endregion
 
         [Test]
         public void CookingIsDone()
@@ -198,8 +206,11 @@ namespace Microwave.Test.Integrations
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
             _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
 
+            _output.ClearReceivedCalls();
+
             _uut.CookingIsDone();
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"Display cleared")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Contains($"Display cleared")));
             //Assert $"Display cleared"
         }
 

@@ -64,6 +64,7 @@
     <Compile Include="IT_2_CC_PT_DISP.cs" />
     <Compile Include="IT4_UI_Display.cs" />
     <Compile Include="IT_3_CookControl_PowerTube_Display_Timer.cs" />
+    <Compile Include="IT_5_UI_Display_Light.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
