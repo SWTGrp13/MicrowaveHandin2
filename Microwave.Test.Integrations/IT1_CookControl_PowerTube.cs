@@ -16,6 +16,7 @@ namespace Microwave.Test.Integrations
         private IOutput _output;
         private ITimer _timer;
         private IDisplay _display;
+        private IUserInterface _ui;
 
         private PowerTube _powerTube;
         private CookController _uut;
@@ -26,8 +27,9 @@ namespace Microwave.Test.Integrations
             _output = Substitute.For<IOutput>();
             _timer = Substitute.For<ITimer>();
             _display = Substitute.For<IDisplay>();
+            _ui = Substitute.For<IUserInterface>();
             _powerTube = new PowerTube(_output);
-            _uut = new CookController(_timer, _display, _powerTube);
+            _uut = new CookController(_timer, _display, _powerTube, _ui);
         }
 
         [TestCase(90, 10)]
@@ -61,12 +63,15 @@ namespace Microwave.Test.Integrations
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
         }
 
-        // [TestCase(10, 10)]
-        //public void OnTimerExpired_Output(int power, int time)
-        //{
-        //    _uut.StartCooking(power, time);
-        //    _uut.OnTimerExpired(this, );
-        //    _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
-        //}
+        [Test]
+        public void OnTimerExpired_Output()
+        {
+
+            _uut.StartCooking(50, 50);
+
+            _timer.Expired += Raise.EventWith(this, EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"turned off")));
+        }
     }
 }
