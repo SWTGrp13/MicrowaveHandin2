@@ -11,49 +11,65 @@ namespace Microwave.Test.Integrations
 {
     class IT_3_CookControl_PowerTube_Display_Timer
     {
-        private Timer _uut_time;
-        private IOutput _uut_output;
-        private IUserInterface _uut_ui;
-        private Display _uut_display;
-        private PowerTube _uut_pt;
+        private Timer _time;
+        private IOutput _output;
+        private IUserInterface _ui;
+        private Display _display;
+        private PowerTube _pt;
         private CookController _uut_cc;
 
         [SetUp]
         public void sut_initalize()
         {
             // Substitute for Stups in sut-testcase 3
-            _uut_output = Substitute.For<IOutput>();
-            _uut_ui = Substitute.For<IUserInterface>();
+            _output = Substitute.For<IOutput>();
+            _ui = Substitute.For<IUserInterface>();
             // instantiate includes pr sut-testcast 3
-            _uut_display = new Display(_uut_output);
-            _uut_time = new MicrowaveOvenClasses.Boundary.Timer();
-            _uut_pt = new PowerTube(_uut_output);
+            _display = new Display(_output);
+            _time = new MicrowaveOvenClasses.Boundary.Timer();
+            _pt = new PowerTube(_output);
             // instantiate TOP for sut-testcase 3
-            _uut_cc = new CookController(_uut_time, _uut_display, _uut_pt);
+            _uut_cc = new CookController(_time, _display, _pt, _ui);
         }
-      
+   
         [TestCase(40,2000)]
         public void testCookControllerTimeTick(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power,time);
-            _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
-          
-            pause.WaitOne(1000);
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
+           
+            pause.WaitOne(1000+500);
             pause.Set();
-            Assert.That(_uut_time.TimeRemaining,Is.EqualTo(1000));
+            Assert.That(_time.TimeRemaining,Is.EqualTo(1000));
+        }
+        
+        [TestCase(60, 2000)]
+        public void testCookControllerTimeTickDisplay(int power, int time)
+        {
+            ManualResetEvent pause = new ManualResetEvent(false);
+            _uut_cc.StartCooking(power, time);
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
+
+            pause.WaitOne(1000+500);
+            pause.Set();
+            time = time-1000;
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: {time/60}:{time%60}")));
         }
 
+    
         [TestCase(50,2000)]
         public void testCookControllerTimeExpired(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power, time);
-            pause.WaitOne(2000);
+            // something is iffy here..
+           
+            pause.WaitOne(time+1000);
             pause.Set();
-            _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
         }
-
+       
         [TestCase(40, -1500)]
         public void testCookControllerNegativeTimeThrowsException(int power, int time)
         {
