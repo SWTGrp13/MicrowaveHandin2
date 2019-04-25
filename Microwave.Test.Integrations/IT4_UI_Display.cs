@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
@@ -52,31 +53,61 @@ namespace Microwave.Test.Integrations
         [Test]
         public void OnPowerPressed_Ready()
         {
-            //PowerPressed 
-            //Assert output Show Power $"Display shows: {power} W"
-            
+            //State is READY
+            _uut.OnPowerPressed(this,EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"Display shows:")));
+
         }
 
         [Test]
         public void OnPowerPressed_SetPower()
         {
-            //PowerPressed State SETPOWER
+            //Set state to SETPOWER:
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _uut.OnPowerPressed(this,EventArgs.Empty);
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"Display shows:")));
             //Assert output Power $"Display shows: {power} W"
         }
         #endregion
 
         #region TimeButtonPressed
-        [Test]
-        public void OnTimePressed_SetPower()
+        [TestCase(5)]
+        [TestCase(1)]
+        [TestCase(20)]
+        public void OnTimePressed_SetPower(int time)
         {
-            //PowerPressed State SETPOWER
-            //Assert output Power $"Display shows: {min:D2}:{sec:D2}"
+            //Set state to SETPOWER:
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            for (int i = 0; i < time; i++)
+            {
+                _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            }
+
+            _uut.OnTimePressed(this, EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: {time:D2}:{0:D2}")));
         }
 
-        [Test]
-        public void OnTimePressed_SetTime()
+        [TestCase(5)]
+        [TestCase(1)]
+        [TestCase(20)]
+        public void OnTimePressed_SetTime(int time)
         {
-            //PowerPressed State SETTIME
+ 
+            //Set state to SETTIME
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            for(int i =0; i<time; i++)
+            {
+                _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            }
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _uut.OnTimePressed(this, EventArgs.Empty);
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: {time:D2}:{0:D2}")));
+
             //Assert output Power $"Display shows: {min:D2}:{sec:D2}"
         }
 
@@ -87,22 +118,42 @@ namespace Microwave.Test.Integrations
         [Test]
         public void OnStartCancelPressed_SetPower()
         {
-            //PowerPressed State SETPOWER
+            //Set state to SETPOWER:
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _uut.OnStartCancelPressed(this,EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display cleared")));
             //Assert output Power $"Display cleared"
         }
 
         [Test]
         public void OnStartCancelPressed_SetTime()
         {
-            //PowerPressed State SETPOWER
+            //Set state to SETTIME
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _uut.OnStartCancelPressed(this, EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display cleared")));
             //Assert output Power $"Display cleared"
         }
 
         [Test]
         public void OnStartCancelPressed_Cooking()
         {
-            //PowerPressed State COOKING
-            //Assert output Power $"Display cleared"
+            //Set state to COOKING
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+
+            _uut.OnStartCancelPressed(this,EventArgs.Empty);
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"Display cleared")));
+
         }
         #endregion
 
@@ -126,12 +177,6 @@ namespace Microwave.Test.Integrations
             //Assert output Power $"Display cleared"
         }
 
-        public void OnDoorOpened_Cooking()
-        {
-            //PowerPressed State Cooking
-            //Assert output Power $"Display cleared"
-        }
-
         #endregion
 
         #region OnDoorClosed
@@ -148,14 +193,14 @@ namespace Microwave.Test.Integrations
         [Test]
         public void CookingIsDone()
         {
-            
-          //  _uut.CookingIsDone();
+            //Set state to COOKING
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
 
-
-       //     _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display cleared")));
-            //When CookingIsDone
+            _uut.CookingIsDone();
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"Display cleared")));
             //Assert $"Display cleared"
-
         }
 
     }
