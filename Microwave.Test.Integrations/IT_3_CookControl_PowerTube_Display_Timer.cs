@@ -31,7 +31,7 @@ namespace Microwave.Test.Integrations
             // instantiate TOP for sut-testcase 3
             _uut_cc = new CookController(_time, _display, _pt);
         }
-      
+      /*
         [TestCase(40,2000)]
         public void testCookControllerTimeTick(int power, int time)
         {
@@ -43,7 +43,7 @@ namespace Microwave.Test.Integrations
             pause.Set();
             Assert.That(_time.TimeRemaining,Is.EqualTo(1000));
         }
-
+        */
         [TestCase(60, 3000)]
         [TestCase(60, 2000)]
         public void testCookControllerTimeTickDisplay(int power, int time)
