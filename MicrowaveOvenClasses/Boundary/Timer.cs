@@ -29,7 +29,7 @@ namespace MicrowaveOvenClasses.Boundary
             {
                 throw new ArgumentOutOfRangeException("time", time, "Must be a positive number");
             }
-
+          
             TimeRemaining = time;
             timer.Enabled = true;
         }

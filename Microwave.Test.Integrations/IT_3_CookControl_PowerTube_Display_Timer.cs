@@ -29,22 +29,21 @@ namespace Microwave.Test.Integrations
             _time = new MicrowaveOvenClasses.Boundary.Timer();
             _pt = new PowerTube(_output);
             // instantiate TOP for sut-testcase 3
-            _uut_cc = new CookController(_time, _display, _pt);
+            _uut_cc = new CookController(_time, _display, _pt, _ui);
         }
-      /*
+   
         [TestCase(40,2000)]
         public void testCookControllerTimeTick(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power,time);
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
-          
-            pause.WaitOne(1000);
+           
+            pause.WaitOne(1000+500);
             pause.Set();
             Assert.That(_time.TimeRemaining,Is.EqualTo(1000));
         }
-        */
-        [TestCase(60, 3000)]
+        
         [TestCase(60, 2000)]
         public void testCookControllerTimeTickDisplay(int power, int time)
         {
@@ -52,24 +51,25 @@ namespace Microwave.Test.Integrations
             _uut_cc.StartCooking(power, time);
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
 
-            pause.WaitOne(1000);
+            pause.WaitOne(1000+500);
             pause.Set();
             time = time-1000;
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: {time/60}:{time%60}")));
         }
 
-
-        [TestCase(50,3000)]
+    
+        [TestCase(50,2000)]
         public void testCookControllerTimeExpired(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power, time);
             // something is iffy here..
+           
             pause.WaitOne(time+1000);
             pause.Set();
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
         }
-
+       
         [TestCase(40, -1500)]
         public void testCookControllerNegativeTimeThrowsException(int power, int time)
         {
