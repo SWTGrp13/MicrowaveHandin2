@@ -13,23 +13,23 @@ namespace Microwave.Test.Integrations
     class IT_2_CC_PT_DISP
     {
       
-        private ITimer _uut_time;
-        private IOutput _uut_output;
-        private Display _uut_display;
-        private PowerTube _uut_pt;
+        private ITimer _time;
+        private IOutput _output;
+        private Display _display;
+        private PowerTube _pt;
         private CookController _uut_cc;
 
         [SetUp]
         public void sut_initalize()
         {
             // Substitute for Stups in sut-testcase 2
-            _uut_time = Substitute.For<ITimer>();
-            _uut_output = Substitute.For<IOutput>();
+            _time = Substitute.For<ITimer>();
+            _output = Substitute.For<IOutput>();
             // instantiate includes pr sut-testcast 2
-            _uut_display = new Display(_uut_output);
-            _uut_pt = new PowerTube(_uut_output);
+            _display = new Display(_output);
+            _pt = new PowerTube(_output);
             // instantiate TOP for sut-testcase 2
-            _uut_cc = new CookController(_uut_time, _uut_display, _uut_pt);
+            _uut_cc = new CookController(_time, _display, _pt);
         }
        
        
@@ -38,11 +38,11 @@ namespace Microwave.Test.Integrations
         {
             _uut_cc.StartCooking(power, time);
 
-            _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
          
-            _uut_time.TimerTick += Raise.Event();
+            _time.TimerTick += Raise.Event();
 
-            _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: 00:00")));
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: 00:00")));
 
 
         }
@@ -54,7 +54,7 @@ namespace Microwave.Test.Integrations
 
             _uut_cc.Stop();
 
-            _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
         }
 
        
