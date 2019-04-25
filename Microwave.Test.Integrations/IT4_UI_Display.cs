@@ -71,7 +71,7 @@ namespace Microwave.Test.Integrations
 
             _uut.OnPowerPressed(this,EventArgs.Empty);
             _output.Received().OutputLine(Arg.Is<string>(str => 
-                str.Contains($"Display shows:")));
+                str.Contains($"Display shows: 50 W")));
             //Assert output Power $"Display shows: {power} W"
         }
         #endregion
@@ -91,7 +91,8 @@ namespace Microwave.Test.Integrations
           
             _uut.OnTimePressed(this, EventArgs.Empty);
 
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: {time:D2}:{0:D2}")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Equals($"Display shows: {time:D2}:{0:D2}")));
         }
 
         [TestCase(5)]
@@ -108,7 +109,8 @@ namespace Microwave.Test.Integrations
             }
            
             _uut.OnTimePressed(this, EventArgs.Empty);
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: {time:D2}:{0:D2}")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Equals($"Display shows: {time:D2}:{0:D2}")));
 
             //Assert output Power $"Display shows: {min:D2}:{sec:D2}"
         }
@@ -127,7 +129,8 @@ namespace Microwave.Test.Integrations
             _output.ClearReceivedCalls();
 
             _uut.OnStartCancelPressed(this,EventArgs.Empty);
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display cleared")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Equals($"Display cleared")));
             //Assert output Power $"Display cleared"
         }
 
@@ -142,7 +145,8 @@ namespace Microwave.Test.Integrations
             _output.ClearReceivedCalls();
 
             _uut.OnStartCancelPressed(this, EventArgs.Empty);
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display cleared")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Equals($"Display cleared")));
             //Assert output Power $"Display cleared"
         }
 
@@ -157,7 +161,8 @@ namespace Microwave.Test.Integrations
             _output.ClearReceivedCalls();
 
             _uut.OnStartCancelPressed(this,EventArgs.Empty);
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"Display cleared")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Contains($"Display cleared")));
 
         }
         #endregion
