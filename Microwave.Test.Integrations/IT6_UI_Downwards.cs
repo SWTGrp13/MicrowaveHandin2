@@ -44,8 +44,6 @@ namespace Microwave.Test.Integrations
             _buttonTime = Substitute.For<IButton>();
             _buttonStartCancel = Substitute.For<IButton>();
             _door = Substitute.For<IDoor>();
-
-           
             _powerTube = new PowerTube(_output);
             _timer = new Timer();
             _light = new Light(_output);
@@ -55,6 +53,8 @@ namespace Microwave.Test.Integrations
             _buttonStartCancel, _door, _display, _light, _cookController);
             // update cookController instance pointer
             _cookController = new CookController(_timer, _display, _powerTube, _uut);
+            // to fix circular dependency 
+            _uut.SetCookController(_cookController);
         }
 
         #endregion
@@ -64,15 +64,10 @@ namespace Microwave.Test.Integrations
         public void OnPowerPressed_Ready_OutPuts()
         {
             //Default state is READY
-
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-
-
             _uut.OnPowerPressed(this, EventArgs.Empty);
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Contains($"Display shows: 50 W")));
-
-            //Assert Powerlevel Output 50
         }
       
         [TestCase(1)]
@@ -88,12 +83,9 @@ namespace Microwave.Test.Integrations
             { 
                 _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             }
-            
             //_uut.OnPowerPressed(this, EventArgs.Empty); <- ikke nødvendigt da eventet bliver nedarvet
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Contains($"Display shows: 50 W")));
-
-            //Assert Powerlevel output X*50
         }
 
         [Test]
@@ -110,24 +102,58 @@ namespace Microwave.Test.Integrations
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Contains($"Display shows: 01:00")));
         }
-
+        // 
         [Test]
-        public void OnStartCancel_OutPuts()
+        public void OnStartCancel_TurnsOnLight()
         {
             //Default state is READY
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             // set time
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
             // output covered in previous tests
-            // _output.ClearReceivedCalls();
-            // circular dependency, ah shit. (found one error)
-            // _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
-
-
+            _output.ClearReceivedCalls();
+            //lav en setCooker i IUserinterface
+            // circular dependency, ah shit. (found one error and fixed)
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
             _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Display shows: 01:00")));
+                str.Contains($"Light is turned on")));
+        }
 
+        [Test]
+        public void OnStartCancel_TurnsOnTube()
+        {
+            //Default state is READY
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // set time
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // output covered in previous tests
+            _output.ClearReceivedCalls();
+            // circular dependency, ah shit. (found one error and fixed)
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"PowerTube works with 50 %")));
+        }
 
+        [Test]
+        public void OnStartCancel_Cancel()
+        {
+            //Default state is READY
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // set time
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // output covered in previous tests
+            _output.ClearReceivedCalls();
+            // start
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // stop
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // should return reverse off on sequence 
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"PowerTube turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Light is turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Display cleared")));
         }
     }
 }
