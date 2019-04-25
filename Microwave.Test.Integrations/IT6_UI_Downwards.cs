@@ -72,7 +72,7 @@ namespace Microwave.Test.Integrations
         [TestCase(10)]
         public void OnPowerPressed_SetPower_OutPuts(int X)
         {
-            //Set state to SETPOWER:
+            //Set state to SETPOWER
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             
             //Power pressed X times
@@ -80,77 +80,103 @@ namespace Microwave.Test.Integrations
             { 
                 _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             }
-           
+
+            _output.ClearReceivedCalls();
+
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _uut.OnPowerPressed(this,EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display shows: {(X * 50)+100} W")));
+        }
+
+        [Test]
+        public void OnTimePressed_SetPower_OutPuts()
+        {
+            //Set state to SETPOWER
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _uut.OnTimePressed(this, EventArgs.Empty);
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Contains($"Display shows: 50 W")));
         }
 
         [Test]
-        public void OnTimePressed_Ready_OutPuts()
+        public void OnTimePressed_SetTime_OutPuts()
         {
-            //Default state is READY
+            //Set state to SETTIME
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-
-            _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Display shows: 50 W")));
-           
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _uut.OnTimePressed(this,EventArgs.Empty);
             // test for default value
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Contains($"Display shows: 01:00")));
         }
-        // 
+
+        
         [Test]
-        public void OnStartCancel_TurnsOnLight()
+        public void OnStartCancel_SetPower_Outputs()
         {
-            //Default state is READY
+            //Set state to COOKING in order to test light 
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            // set time
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            // output covered in previous tests
-            _output.ClearReceivedCalls();
-            //lav en setCooker i IUserinterface
-            // circular dependency, ah shit. (found one error and fixed)
             _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _output.ClearReceivedCalls();
+            
+            //Set state to SETPOWER
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            
+            
+            _uut.OnStartCancelPressed(this,EventArgs.Empty);
+
             _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Light is turned on")));
+                str.Equals($"Light is turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+      
+            //Assert Light = Off, Display = Clear
+        }
+        [Test]
+        public void OnStartCancel_SetTime_Outputs()
+        {
+            //Set state to SETTIME
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _output.ClearReceivedCalls();
+            
+
+            _uut.OnStartCancelPressed(this, EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Light is turned on")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+            //Assert Light = On, Display = Clear
         }
 
         [Test]
-        public void OnStartCancel_TurnsOnTube()
+        public void OnStartCancel_Cooking_Outputs()
         {
-            //Default state is READY
+            //Set state to COOKING
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            // set time
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            // output covered in previous tests
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
             _output.ClearReceivedCalls();
-            // circular dependency, ah shit. (found one error and fixed)
-            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+
+            _uut.OnStartCancelPressed(this, EventArgs.Empty);
+
             _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Contains($"PowerTube works with 50 %")));
+                str.Equals($"Light is turned on")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+            //Assert Light = Off, Display = Clear
         }
 
-        [Test]
-        public void OnStartCancel_Cancel()
-        {
-            //Default state is READY
-            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            // set time
-            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            // output covered in previous tests
-            _output.ClearReceivedCalls();
-            // start
-            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            // stop
-            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            // should return reverse on sequence 
-            _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Contains($"PowerTube turned off")));
-            _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Light is turned off")));
-            _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Display cleared")));
-        }
     }
 }
