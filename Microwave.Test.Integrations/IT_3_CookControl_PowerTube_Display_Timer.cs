@@ -27,8 +27,15 @@ namespace Microwave.Test.Integrations
             // instantiate TOP for sut-testcase 3
             _uut_cc = new CookController(_uut_time, _uut_display, _uut_pt);
         }
-
-
+        /*
+        [TestCase(40,2000)]
+        public void testCookControllerTimeTick(int power, int time)
+        {
+            _uut_cc.StartCooking(power,time);
+            
+           // _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: {time / 60}:{time % 60}")));
+        }
+        */
         [TestCase(40, -1500)]
         public void testCookControllerNegativeTimeThrowsException(int power, int time)
         {

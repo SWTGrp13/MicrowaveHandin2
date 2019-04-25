@@ -32,7 +32,6 @@ namespace Microwave.Test.Integrations
         }
        
         [TestCase(50, 1000)]
-        //[TestCase(70, 1500)] fejler, ved ikke hvorfor
         [TestCase(70, 2000)]
         public void TestCookControllerAndDisplay(int power, int time)
         {
@@ -54,7 +53,7 @@ namespace Microwave.Test.Integrations
 
             _uut_cc.Stop();
 
-            _uut_output.Received().OutputLine("PowerTube turned off");
+            _uut_output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
         }
 
         [TestCase(40, 1000)]
@@ -70,7 +69,9 @@ namespace Microwave.Test.Integrations
         public void testCookControllerStartStopStartDoesNotThrowException(int power, int time)
         {
             _uut_cc.StartCooking(power, time);
+
             _uut_cc.Stop();
+
             Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Nothing);
         }
 
