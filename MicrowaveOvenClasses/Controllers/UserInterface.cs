@@ -155,9 +155,5 @@ namespace MicrowaveOvenClasses.Controllers
             }
         }
 
-        public void SetCookController(ICookController Controller)
-        {
-            myCooker = Controller;
-        }
     }
 }

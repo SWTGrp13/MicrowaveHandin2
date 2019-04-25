@@ -48,13 +48,10 @@ namespace Microwave.Test.Integrations
             _timer = new Timer();
             _light = new Light(_output);
             _display = new Display(_output);
+            _cookController = new CookController(_timer, _display, _powerTube);
             _uut = new UserInterface(_buttonPower, _buttonTime,
-            // send pointer to cookController
             _buttonStartCancel, _door, _display, _light, _cookController);
-            // update cookController instance pointer
-            _cookController = new CookController(_timer, _display, _powerTube, _uut);
-            // to fix circular dependency 
-            _uut.SetCookController(_cookController);
+            _cookController.UI = _uut;
         }
 
         #endregion
@@ -83,7 +80,7 @@ namespace Microwave.Test.Integrations
             { 
                 _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             }
-            //_uut.OnPowerPressed(this, EventArgs.Empty); <- ikke nødvendigt da eventet bliver nedarvet
+           
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Contains($"Display shows: 50 W")));
         }
@@ -147,7 +144,7 @@ namespace Microwave.Test.Integrations
             _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
             // stop
             _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            // should return reverse off on sequence 
+            // should return reverse on sequence 
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Contains($"PowerTube turned off")));
             _output.Received().OutputLine(Arg.Is<string>(str =>
