@@ -67,7 +67,7 @@ namespace Microwave.Test.Integrations
         {
             //Set state to SETPOWER:
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+      
 
             _uut.OnPowerPressed(this,EventArgs.Empty);
             _output.Received().OutputLine(Arg.Is<string>(str => 
@@ -106,8 +106,7 @@ namespace Microwave.Test.Integrations
             {
                 _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
             }
-            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
-
+           
             _uut.OnTimePressed(this, EventArgs.Empty);
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: {time:D2}:{0:D2}")));
 
@@ -123,7 +122,7 @@ namespace Microwave.Test.Integrations
         {
             //Set state to SETPOWER:
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+           
 
             _output.ClearReceivedCalls();
 
@@ -138,7 +137,7 @@ namespace Microwave.Test.Integrations
             //Set state to SETTIME
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+           
 
             _output.ClearReceivedCalls();
 
@@ -171,7 +170,7 @@ namespace Microwave.Test.Integrations
         {
             //Set state to SETPOWER
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+      
 
             _uut.OnDoorOpened(this,EventArgs.Empty);
 
@@ -186,7 +185,7 @@ namespace Microwave.Test.Integrations
             //Set state to SETTIME
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            
 
             _uut.OnDoorOpened(this, EventArgs.Empty);
 
