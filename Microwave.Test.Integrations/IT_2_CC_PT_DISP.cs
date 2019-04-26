@@ -54,7 +54,8 @@ namespace Microwave.Test.Integrations
 
             _uut_cc.Stop();
 
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Equals($"PowerTube turned off")));
         }
 
        
