@@ -40,7 +40,7 @@ namespace Microwave.Test.Integrations
             _output.Received().OutputLine(Arg.Is<string>(str => 
                 str.Equals($"PowerTube works with {power} %")));
            
-            pause.WaitOne(1000);
+            pause.WaitOne(1050);
             pause.Set();
             Assert.That(_time.TimeRemaining,Is.EqualTo(1));
         }
@@ -54,7 +54,7 @@ namespace Microwave.Test.Integrations
             _output.Received().OutputLine(Arg.Is<string>(str => 
                 str.Equals($"PowerTube works with {power} %")));
 
-            pause.WaitOne(1000);
+            pause.WaitOne(1050);
             pause.Set();
             time = time-1;
             _output.Received().OutputLine(Arg.Is<string>(str => 
@@ -111,7 +111,7 @@ namespace Microwave.Test.Integrations
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power, time);
 
-            pause.WaitOne(1000);
+            pause.WaitOne(1050);
             pause.Set();
 
             time = time - 1;
