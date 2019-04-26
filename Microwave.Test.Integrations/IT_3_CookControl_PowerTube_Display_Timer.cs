@@ -43,6 +43,8 @@ namespace Microwave.Test.Integrations
             pause.WaitOne(1050);
             pause.Set();
             Assert.That(_time.TimeRemaining,Is.EqualTo(1));
+
+            _time.Stop();
         }
         
         [TestCase(60, 5)] //Five senconds
@@ -59,6 +61,8 @@ namespace Microwave.Test.Integrations
             time = time-1;
             _output.Received().OutputLine(Arg.Is<string>(str => 
                 str.Equals($"Display shows: 00:{time:D2}")));
+
+            _time.Stop();
         }
 
     
@@ -78,12 +82,16 @@ namespace Microwave.Test.Integrations
                 str.Equals($"PowerTube works with {power} %")));
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: 00:00")));
+
+            _time.Stop();
         }
        
         [TestCase(40, -1500)]
         public void testCookControllerNegativeTimeThrowsException(int power, int time)
         {
             Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Exception);
+
+            _time.Stop();
         }
 
 
@@ -102,6 +110,8 @@ namespace Microwave.Test.Integrations
             
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: {time / 60}:{time % 60}")));
+
+            _time.Stop();
         }
 
 
@@ -120,6 +130,8 @@ namespace Microwave.Test.Integrations
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: 00:04")));
             // Assert time is 00:04
+
+            _time.Stop();
         }
 
     }
