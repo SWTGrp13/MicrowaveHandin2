@@ -32,7 +32,7 @@ namespace Microwave.Test.Integrations
             _uut_cc = new CookController(_time, _display, _pt, _ui);
         }
    
-        [TestCase(40,2)]
+        [TestCase(350,2)]
         public void testCookControllerTimeTick(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
@@ -47,8 +47,8 @@ namespace Microwave.Test.Integrations
             _time.Stop();
         }
         
-        [TestCase(60, 5)] //Five senconds
-        [TestCase(50, 2)] //Two senconds
+        [TestCase(350, 5)] //Five senconds
+        [TestCase(350, 2)] //Two senconds
         public void testCookControllerTimeTickDisplay(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
@@ -66,7 +66,7 @@ namespace Microwave.Test.Integrations
         }
 
     
-        [TestCase(50,5)]//Five Seconds
+        [TestCase(350,5)]//Five Seconds
         public void testCookControllerTimeExpired(int power, int time)
         {
             
@@ -86,7 +86,7 @@ namespace Microwave.Test.Integrations
             _time.Stop();
         }
        
-        [TestCase(40, -1500)]
+        [TestCase(350, -1500)]
         public void testCookControllerNegativeTimeThrowsException(int power, int time)
         {
             Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Exception);
@@ -95,7 +95,7 @@ namespace Microwave.Test.Integrations
         }
 
 
-        [TestCase(50,2000)]
+        [TestCase(350,2000)]
         public void OnTimerEventCorrectTime(int power,int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
@@ -115,7 +115,7 @@ namespace Microwave.Test.Integrations
         }
 
 
-        [TestCase(50, 5)] //Set time to five second
+        [TestCase(350, 5)] //Set time to five second
         public void OnTimerExpireCorrectTime(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
