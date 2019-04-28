@@ -32,15 +32,15 @@ namespace Microwave.Test.Integrations
             _uut = new CookController(_timer, _display, _powerTube, _ui);
         }
 
-        [TestCase(90, 10)]
-        [TestCase(10, 10)]
+        [TestCase(630, 10)]
+        [TestCase(70, 10)]
         public void StartCooking_OutputCorrect(int power, int time)
         {
             _uut.StartCooking(power, time);
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
         }
 
-        [TestCase(101, 10)]
+        [TestCase(701, 10)]
         [TestCase(-10, 10)]
         public void StartCooking_PowerOutOfRange(int power, int time)
         {

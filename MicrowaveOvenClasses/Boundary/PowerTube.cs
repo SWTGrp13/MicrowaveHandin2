@@ -6,7 +6,7 @@ namespace MicrowaveOvenClasses.Boundary
     public class PowerTube : IPowerTube
     {
         private IOutput myOutput;
-        // ændret af Mikkel, ellers kan der ikke testes i intregrations testen
+        
         public bool IsOn = false;
 
         public PowerTube(IOutput output)
@@ -16,7 +16,7 @@ namespace MicrowaveOvenClasses.Boundary
 
         public void TurnOn(int power)
         {
-            if (power < 1 || 100 < power)
+            if (power < 1 || 700 < power)
             {
                 throw new ArgumentOutOfRangeException("power", power, "Must be between 1 and 100 % (incl.)");
             }
@@ -25,6 +25,8 @@ namespace MicrowaveOvenClasses.Boundary
             {
                 throw new ApplicationException("PowerTube.TurnOn: is already on");
             }
+        
+            double percentage = Math.Ceiling((double) (power/700) * 100);
 
             myOutput.OutputLine($"PowerTube works with {power} %");
             IsOn = true;
