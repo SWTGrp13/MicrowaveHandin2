@@ -1,12 +1,13 @@
 ﻿using System;
 using MicrowaveOvenClasses.Interfaces;
 
+
 namespace MicrowaveOvenClasses.Boundary
 {
     public class PowerTube : IPowerTube
     {
         private IOutput myOutput;
-        
+        private double percentage;
         public bool IsOn = false;
 
         public PowerTube(IOutput output)
@@ -26,9 +27,10 @@ namespace MicrowaveOvenClasses.Boundary
                 throw new ApplicationException("PowerTube.TurnOn: is already on");
             }
         
-            double percentage = Math.Ceiling((double) (power/700) * 100);
-
-            myOutput.OutputLine($"PowerTube works with {power} %");
+            
+            percentage = Math.Round(((Convert.ToDouble(power)/700) * 100),2);
+          
+            myOutput.OutputLine($"PowerTube works with {(percentage)} %");
             IsOn = true;
         }
 

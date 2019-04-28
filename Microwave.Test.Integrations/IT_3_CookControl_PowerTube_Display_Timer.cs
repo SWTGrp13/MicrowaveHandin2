@@ -38,7 +38,7 @@ namespace Microwave.Test.Integrations
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power,time);
             _output.Received().OutputLine(Arg.Is<string>(str => 
-                str.Equals($"PowerTube works with {power} %")));
+                str.Equals($"PowerTube works with {Math.Round(((Convert.ToDouble(power) / 700) * 100), 2)} %")));
            
             pause.WaitOne(1050);
             pause.Set();
