@@ -1,4 +1,5 @@
-﻿using MicrowaveOvenClasses.Boundary;
+﻿using System;
+using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Interfaces;
 using NSubstitute;
 using NSubstitute.Core.Arguments;
@@ -11,6 +12,7 @@ namespace Microwave.Test.Unit
     {
         private PowerTube uut;
         private IOutput output;
+        private double percentage;
 
         [SetUp]
         public void Setup()
@@ -23,7 +25,8 @@ namespace Microwave.Test.Unit
         public void TurnOn_WasOff_CorrectOutput()
         {
             uut.TurnOn(50);
-            output.Received().OutputLine(Arg.Is<string>(str => str.Contains("50 W")));
+            percentage = Math.Round(((Convert.ToDouble(50) / 700) * 100), 2);
+            output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {percentage} %")));
         }
 
         [Test]
