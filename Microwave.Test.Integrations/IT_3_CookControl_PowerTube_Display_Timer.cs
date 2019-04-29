@@ -105,14 +105,11 @@ namespace Microwave.Test.Integrations
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"PowerTube works with {percentage} %")));
             _output.ClearReceivedCalls();
-
-            pause.WaitOne(time / 2);
+            pause.WaitOne((time / 2) + 100);
             pause.Set();
             time = time - 1;
-
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: {time / 60}:{time % 60}")));
-
             _time.Stop();
         }
 
