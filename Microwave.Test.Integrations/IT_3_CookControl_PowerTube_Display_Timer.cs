@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
@@ -18,6 +17,7 @@ namespace Microwave.Test.Integrations
         private Display _display;
         private PowerTube _pt;
         private CookController _uut_cc;
+        private double percentage;
 
         [SetUp]
         public void sut_initalize()
@@ -32,61 +32,64 @@ namespace Microwave.Test.Integrations
             // instantiate TOP for sut-testcase 3
             _uut_cc = new CookController(_time, _display, _pt, _ui);
         }
-   
-        [TestCase(350,2)]
+
+        [TestCase(350, 2)]
         public void testCookControllerTimeTick(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
-            _uut_cc.StartCooking(power,time);
-            _output.Received().OutputLine(Arg.Is<string>(str => 
-                str.Equals($"PowerTube works with {power} W")));
-           
+            _uut_cc.StartCooking(power, time);
+            percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"PowerTube works with {percentage} %")));
+
             pause.WaitOne(1050);
             pause.Set();
-            Assert.That(_time.TimeRemaining,Is.EqualTo(1));
+            Assert.That(_time.TimeRemaining, Is.EqualTo(1));
 
             _time.Stop();
         }
-        
+
         [TestCase(350, 5)] //Five senconds
         [TestCase(350, 2)] //Two senconds
         public void testCookControllerTimeTickDisplay(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power, time);
-            _output.Received().OutputLine(Arg.Is<string>(str => 
-                str.Equals($"PowerTube works with {power} W")));
+            percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"PowerTube works with {percentage} %")));
 
             pause.WaitOne(1050);
             pause.Set();
-            time = time-1;
-            _output.Received().OutputLine(Arg.Is<string>(str => 
+            time = time - 1;
+            _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: 00:{time:D2}")));
 
             _time.Stop();
         }
 
-    
-        [TestCase(350,5)]//Five Seconds
+
+        [TestCase(350, 5)]//Five Seconds
         public void testCookControllerTimeExpired(int power, int time)
         {
-            
+
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power, time);
-            
-           
-            pause.WaitOne(((time+1)*1000)); 
+            percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
+
+            pause.WaitOne(((time + 1) * 1000));
             pause.Set();
 
+
             //Note: Time's set a little off, since clockfrequency isn't always correct
-           _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Equals($"PowerTube works with {power} W")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                 str.Equals($"PowerTube works with {percentage} %")));
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: 00:00")));
 
             _time.Stop();
         }
-       
+
         [TestCase(350, -1500)]
         public void testCookControllerNegativeTimeThrowsException(int power, int time)
         {
@@ -96,20 +99,23 @@ namespace Microwave.Test.Integrations
         }
 
 
-        [TestCase(350,2000)]
-        public void OnTimerEventCorrectTime(int power,int time)
+        [TestCase(350, 2000)]
+        public void OnTimerEventCorrectTime(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
+            percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
             _uut_cc.StartCooking(power, time);
             _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Equals($"PowerTube works with {power} W")));
+                str.Equals($"PowerTube works with {percentage} %")));
             _output.ClearReceivedCalls();
-            pause.WaitOne((time/2));
+
+            pause.WaitOne(time / 2);
             pause.Set();
-            time = time - 1;
-            Debug.WriteLine(time/60 + ":"+time%60);
+            time = time - (time / 2000);
+
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: {time / 60}:{time % 60}")));
+
             _time.Stop();
         }
 
@@ -118,6 +124,7 @@ namespace Microwave.Test.Integrations
         public void OnTimerExpireCorrectTime(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
+            percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
             _uut_cc.StartCooking(power, time);
 
             pause.WaitOne(1050);

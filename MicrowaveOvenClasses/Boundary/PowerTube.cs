@@ -30,7 +30,7 @@ namespace MicrowaveOvenClasses.Boundary
             
             percentage = Math.Round(((Convert.ToDouble(power)/700) * 100),2);
           
-            myOutput.OutputLine($"PowerTube works with {(percentage)} %");
+            myOutput.OutputLine($"PowerTube works with {percentage} %");
             IsOn = true;
         }
 

@@ -18,6 +18,8 @@ namespace Microwave.Test.Integrations
         private IDisplay _display;
         private IUserInterface _ui;
 
+        private double percentage;
+
         private PowerTube _powerTube;
         private CookController _uut;
 
@@ -36,8 +38,9 @@ namespace Microwave.Test.Integrations
         [TestCase(70, 10)]
         public void StartCooking_OutputCorrect(int power, int time)
         {
+            percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
             _uut.StartCooking(power, time);
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} W")));
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {percentage} %")));
         }
 
         [TestCase(701, 10)]
