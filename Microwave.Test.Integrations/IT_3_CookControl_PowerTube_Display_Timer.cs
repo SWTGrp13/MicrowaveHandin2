@@ -95,7 +95,7 @@ namespace Microwave.Test.Integrations
             _time.Stop();
         }
 
-
+        
         [TestCase(350, 2)]
         public void OnTimerEventCorrectTime(int power, int time)
         {
@@ -110,6 +110,7 @@ namespace Microwave.Test.Integrations
             pause.WaitOne((1050));
             pause.Set();
             time = time - 1;
+
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: 00:{time:D2}")));
             _time.Stop();
