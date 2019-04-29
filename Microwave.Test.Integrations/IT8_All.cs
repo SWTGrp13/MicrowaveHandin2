@@ -83,21 +83,47 @@ namespace Microwave.Test.Integrations
         }
 
         [Test]
-        public void TestDoorOpen_Cooking()
+        public void TestOnDoorOpen_Cooking()
         {
-            //State SetPower
+            //Set stato to COOKING
+            _buttonPower.Press();
+            _buttonTime.Press();
+            _buttonStartCancel.Press();
+
+
+            _output.ClearReceivedCalls();
             //Open door
-            //Assert cooking stopped
-            //Assert powerlevel 50
-            //Assert time = 1
+            _door.Open();
+
+
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals(
+                $"PowerTube turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Display shows: 01:00")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"PowerTube works with 7.14 %"))); //Power == 50
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display shows: 50 W")));
+
+
+            //Assert powertube turned off
+            //Assert Powelevel 50
+            //Assert time 01:00
         }
 
 
         [Test]
         public void TestOnDoorClosed()
         {
-            //State door open
-            //Close door
+            //Set state to DOOROPEN
+            _door.Open();
+
+            _output.ClearReceivedCalls();
+            _door.Close();
+
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals(
+                $"Light is turned off")));
+
             //Assert light off
         }
 

@@ -40,7 +40,8 @@ namespace Microwave.Test.Integrations
         {
             percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
             _uut.StartCooking(power, time);
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {percentage} %")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Equals($"PowerTube works with {percentage} %")));
         }
 
         [TestCase(701, 10)]
@@ -63,7 +64,8 @@ namespace Microwave.Test.Integrations
         {
             _uut.StartCooking(power, time);
             _uut.Stop();
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Equals($"PowerTube turned off")));
         }
 
         [Test]
@@ -74,7 +76,8 @@ namespace Microwave.Test.Integrations
 
             _timer.Expired += Raise.EventWith(this, EventArgs.Empty);
 
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Contains($"turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Contains($"turned off")));
         }
     }
 }
