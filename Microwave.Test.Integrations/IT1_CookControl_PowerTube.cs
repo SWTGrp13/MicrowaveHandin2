@@ -37,7 +37,7 @@ namespace Microwave.Test.Integrations
         public void StartCooking_OutputCorrect(int power, int time)
         {
             _uut.StartCooking(power, time);
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} W")));
         }
 
         [TestCase(701, 10)]

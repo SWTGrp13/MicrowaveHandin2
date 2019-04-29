@@ -38,7 +38,7 @@ namespace Microwave.Test.Integrations
         {
             _uut_cc.StartCooking(power, time);
 
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} %")));
+            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {power} W")));
          
             _time.TimerTick += Raise.Event();
 
