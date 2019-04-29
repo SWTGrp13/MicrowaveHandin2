@@ -11,6 +11,7 @@ using NUnit.Framework;
 
 namespace Microwave.Test.Integrations
 {
+    /*
     /// <summary>
     /// Det her er en fjollet test. Vi bruger ikke door overhovedet.
     /// </summary>
@@ -178,4 +179,5 @@ namespace Microwave.Test.Integrations
 
 
     }
+    */
 }
