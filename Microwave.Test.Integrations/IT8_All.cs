@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace Microwave.Test.Integrations
 {
     [TestFixture]
-    public class IT8_BtnTop_NoStubs
+    public class IT8_All
     { 
         private UserInterface _ui;
         private Display _display;
@@ -37,7 +37,7 @@ namespace Microwave.Test.Integrations
             _buttonTime = new Button();
             _buttonStartCancel = new Button();
 
-            _door = Substitute.For<IDoor>();
+            _door = new Door();
             _powerTube = new PowerTube(_output);
             _timer = new Timer();
             _light = new Light(_output);
@@ -50,11 +50,58 @@ namespace Microwave.Test.Integrations
         }
 
         [Test]
-        public void TestDoorOpen()
+        public void TestDoorOpen_ready()
         {
             _door.Opened += Raise.Event();
 
-             
+            //State Ready
+            //Open door
+            //Assert Light on
         }
+
+
+        [Test]
+        public void TestDoorOpen_SetPower()
+        {
+            //State SetPower
+            //Open door
+            //Assert Light on
+            //Assert DisplayClear
+            //Assert powerlevel 50
+        }
+
+
+        [Test]
+        public void TestDoorOpen_SetTime()
+        {
+            //State Settime
+            //Open door
+            //Assert powerlevel 50
+            //Assert time 1
+            //Assert Light on
+            //Assert DisplayClear
+        }
+
+        [Test]
+        public void TestDoorOpen_Cooking()
+        {
+            //State SetPower
+            //Open door
+            //Assert cooking stopped
+            //Assert powerlevel 50
+            //Assert time = 1
+        }
+
+
+        [Test]
+        public void TestOnDoorClosed()
+        {
+            //State door open
+            //Close door
+            //Assert light off
+        }
+
+
+
     }
 }
