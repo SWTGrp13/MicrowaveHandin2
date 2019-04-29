@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
@@ -103,14 +104,12 @@ namespace Microwave.Test.Integrations
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"PowerTube works with {power} W")));
             _output.ClearReceivedCalls();
-
-            pause.WaitOne(time/2);
+            pause.WaitOne((time/2));
             pause.Set();
-            time = time - (time/2000);
-            
+            time = time - 1;
+            Debug.WriteLine(time/60 + ":"+time%60);
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: {time / 60}:{time % 60}")));
-
             _time.Stop();
         }
 
