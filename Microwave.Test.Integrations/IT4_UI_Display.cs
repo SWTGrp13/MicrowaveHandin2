@@ -141,7 +141,6 @@ namespace Microwave.Test.Integrations
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
            
-
             _output.ClearReceivedCalls();
 
             _uut.OnStartCancelPressed(this, EventArgs.Empty);
@@ -176,7 +175,6 @@ namespace Microwave.Test.Integrations
             //Set state to SETPOWER
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
       
-
             _uut.OnDoorOpened(this,EventArgs.Empty);
 
             _output.Received().OutputLine(Arg.Is<string>(str =>

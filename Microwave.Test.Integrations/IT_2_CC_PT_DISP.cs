@@ -46,8 +46,8 @@ namespace Microwave.Test.Integrations
 
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: 00:00")));
 
-
         }
+
 
         [TestCase(70, 2000)]
         public void testCookControllerStop(int power, int time)

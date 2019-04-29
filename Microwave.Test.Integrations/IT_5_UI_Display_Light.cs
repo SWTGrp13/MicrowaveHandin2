@@ -85,7 +85,6 @@ namespace Microwave.Test.Integrations
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
             
-
             _uut.OnStartCancelPressed(this, EventArgs.Empty);
 
             _output.Received().OutputLine(Arg.Is<string>(str => 
@@ -167,7 +166,7 @@ namespace Microwave.Test.Integrations
             _uut.OnDoorClosed(this,EventArgs.Empty);
             _output.Received().OutputLine(Arg.Is<string>(
                 str => str.Equals($"Light is turned off")));
-            //Assert output Power "Light is turned off"
+            //Assert"Light is turned off"
         }
 
         #endregion
@@ -191,6 +190,8 @@ namespace Microwave.Test.Integrations
 
             //Assert $"Light is turned on"
         }
+
+     
     }
 
 }

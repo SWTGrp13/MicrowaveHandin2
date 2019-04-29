@@ -79,9 +79,6 @@ namespace Microwave.Test.Integrations
 
             pause.WaitOne(((time + 1) * 1000));
             pause.Set();
-
-
-            //Note: Time's set a little off, since clockfrequency isn't always correct
             _output.Received().OutputLine(Arg.Is<string>(str =>
                  str.Equals($"PowerTube works with {percentage} %")));
             _output.Received().OutputLine(Arg.Is<string>(str =>
@@ -111,7 +108,7 @@ namespace Microwave.Test.Integrations
 
             pause.WaitOne(time / 2);
             pause.Set();
-            time = time - (time / 2000);
+            time = time - 1;
 
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: {time / 60}:{time % 60}")));
