@@ -96,20 +96,22 @@ namespace Microwave.Test.Integrations
         }
 
 
-        [TestCase(350, 2000)]
+        [TestCase(350, 2)]
         public void OnTimerEventCorrectTime(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
             percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
+
             _uut_cc.StartCooking(power, time);
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"PowerTube works with {percentage} %")));
             _output.ClearReceivedCalls();
-            pause.WaitOne((time / 2) + 100);
+
+            pause.WaitOne((1050));
             pause.Set();
             time = time - 1;
             _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Equals($"Display shows: {time / 60}:{time % 60}")));
+                str.Equals($"Display shows: 00:{time:D2}")));
             _time.Stop();
         }
 
