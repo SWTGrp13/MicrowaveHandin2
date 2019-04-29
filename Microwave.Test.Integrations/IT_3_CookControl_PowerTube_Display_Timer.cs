@@ -38,7 +38,7 @@ namespace Microwave.Test.Integrations
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power,time);
             _output.Received().OutputLine(Arg.Is<string>(str => 
-                str.Equals($"PowerTube works with {power} %")));
+                str.Equals($"PowerTube works with {power} W")));
            
             pause.WaitOne(1050);
             pause.Set();
@@ -54,7 +54,7 @@ namespace Microwave.Test.Integrations
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power, time);
             _output.Received().OutputLine(Arg.Is<string>(str => 
-                str.Equals($"PowerTube works with {power} %")));
+                str.Equals($"PowerTube works with {power} W")));
 
             pause.WaitOne(1050);
             pause.Set();
@@ -79,7 +79,7 @@ namespace Microwave.Test.Integrations
 
             //Note: Time's set a little off, since clockfrequency isn't always correct
            _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Equals($"PowerTube works with {power} %")));
+                str.Equals($"PowerTube works with {power} W")));
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display shows: 00:00")));
 
@@ -101,7 +101,7 @@ namespace Microwave.Test.Integrations
             ManualResetEvent pause = new ManualResetEvent(false);
             _uut_cc.StartCooking(power, time);
             _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Equals($"PowerTube works with {power} %")));
+                str.Equals($"PowerTube works with {power} W")));
             _output.ClearReceivedCalls();
 
             pause.WaitOne(time/2);
