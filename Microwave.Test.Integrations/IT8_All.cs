@@ -29,7 +29,7 @@ namespace Microwave.Test.Integrations
         private IDoor _door;
 
         [SetUp]
-        public void sut_initalization()
+        public void sut_initialization()
         {
             _output = Substitute.For<Output>(); 
 
@@ -50,65 +50,67 @@ namespace Microwave.Test.Integrations
         }
 
         [Test]
-        public void TestDoorOpen_ready()
+        public void TestOnDoorOpened_ready()
         {
             // open door
             _door.Open();
             // assert light on
             _output.OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Light is turned on")));
+                str.Equals($"Light is turned on")));
         }
 
 
         [Test]
-        public void TestDoorOpen_SetPower()
+        public void TestOnDoorOpened_SetPower()
         {
+            //State SetPower
+            _buttonPower.Press();
+            _output.ClearReceivedCalls();
 
             //Open door
             _door.Open();
-            _door.Close();
-            //State SetPower
-            _buttonPower.Press();
-            _buttonTime.Press();
+            
             //Assert Light on
-            _output.OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Light is turned on")));
             _output.OutputLine(Arg.Is<string>(str =>
                 str.Contains($"Light is turned off")));
             _buttonStartCancel.Press();
             //Assert DisplayClear
             _output.OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Display cleared")));
+                str.Equals($"Display cleared")));
             //Assert powerlevel 50
             _output.OutputLine(Arg.Is<string>(str =>
-                str.Contains($"PowerTube works with 7,14 %")));
+                str.Equals($"PowerTube works with 7,14 %")));
+            _output.OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display shows: 50 W")));
         }
 
 
         [Test]
-        public void TestDoorOpen_SetTime()
+        public void TestOnDoorOpened_SetTime()
         {
-            //Open door
-            _door.Open();
-            _door.Close();
-            //State SetPower
-            _buttonPower.Press();
+
             //State SetTime
+            _buttonPower.Press();
             _buttonTime.Press();
+        
+            _output.ClearReceivedCalls();
+
             _door.Open();
            
             //Assert powerlevel 50
             _output.OutputLine(Arg.Is<string>(str =>
-                str.Contains($"PowerTube works with 7,14 %")));
+                str.Equals($"PowerTube works with 7,14 %")));
+            _output.OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display shows: 50 W")));
             //Assert time 1
             _output.OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Display shows: 01:00")));
+                str.Equals($"Display shows: 01:00")));
             //Assert Light on
             _output.OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Light is turned on")));
+                str.Equals($"Light is turned on")));
             //Assert DisplayClear
             _output.OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Display cleared")));
+                str.Equals($"Display cleared")));
         }
 
         [Test]
@@ -118,9 +120,11 @@ namespace Microwave.Test.Integrations
             _buttonPower.Press();
             _buttonTime.Press();
             _buttonStartCancel.Press();
+
             _output.ClearReceivedCalls();
             //Open door
             _door.Open();
+
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals(
                 $"PowerTube turned off")));
             _output.Received().OutputLine(Arg.Is<string>(str =>

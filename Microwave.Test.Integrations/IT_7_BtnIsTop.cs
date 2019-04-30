@@ -14,7 +14,7 @@ namespace Microwave.Test.Integrations
     [TestFixture]
     class IT_7_BtnIsTop
     {
-        private UserInterface _uut;
+        private UserInterface _ui;
         private Display _display;
         private Light _light;
         private CookController _cookController;
@@ -42,11 +42,11 @@ namespace Microwave.Test.Integrations
             _timer = new Timer();
             _light = new Light(_output);
             _display = new Display(_output);
-            _uut = new UserInterface(_buttonPower, _buttonTime,
+            _ui = new UserInterface(_buttonPower, _buttonTime,
                 // send pointer to cookController
                 _buttonStartCancel, _door, _display, _light, _cookController);
             // update cookController instance pointer
-            _cookController = new CookController(_timer, _display, _powerTube, _uut);
+            _cookController = new CookController(_timer, _display, _powerTube, _ui);
         }
 
 
@@ -56,7 +56,7 @@ namespace Microwave.Test.Integrations
             //Default state is READY
             _buttonPower.Press();
 
-            _uut.OnPowerPressed(this, EventArgs.Empty);
+
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Contains($"Display shows: 50 W")));
         }
@@ -66,10 +66,8 @@ namespace Microwave.Test.Integrations
         [TestCase(10)]
         public void OnPowerPressed_SetPower_OutPuts(int X)
         {
-            //Set state to SETPOWER
-            _buttonPower.Press();
 
-            //Power pressed X times
+            //State Setpower - Power pressed X times
             for (int i = 0; i < X; i++)
             {
                 _buttonPower.Press();
@@ -79,10 +77,9 @@ namespace Microwave.Test.Integrations
 
             _buttonPower.Press();
 
-            _uut.OnPowerPressed(this, EventArgs.Empty);
 
             _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Equals($"Display shows: {(X * 50) + 100} W")));
+                str.Equals($"Display shows: {((X+1) * 50)} W")));
         }
 
         [Test]
@@ -91,9 +88,10 @@ namespace Microwave.Test.Integrations
             //Set state to SETPOWER
             _buttonPower.Press();
 
-            _uut.OnTimePressed(this, EventArgs.Empty);
+            _buttonTime.Press();
+
             _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Display shows: 50 W")));
+                str.Contains($"Display shows: 01:00")));
         }
 
         [Test]
@@ -103,10 +101,10 @@ namespace Microwave.Test.Integrations
             _buttonPower.Press();
             _buttonTime.Press();
 
-            _uut.OnTimePressed(this, EventArgs.Empty);
+            _buttonTime.Press();
             // test for default value
             _output.Received().OutputLine(Arg.Is<string>(str =>
-                str.Contains($"Display shows: 01:00")));
+                str.Contains($"Display shows: 02:00")));
         }
 
 
@@ -124,7 +122,7 @@ namespace Microwave.Test.Integrations
             _buttonPower.Press();
 
 
-            _uut.OnStartCancelPressed(this, EventArgs.Empty);
+            _buttonStartCancel.Press();
 
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Light is turned off")));
@@ -143,13 +141,14 @@ namespace Microwave.Test.Integrations
             _output.ClearReceivedCalls();
 
 
-            _uut.OnStartCancelPressed(this, EventArgs.Empty);
+            _buttonStartCancel.Press();
 
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Light is turned on")));
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display cleared")));
-            //Assert Light = On, Display = Clear
+
+            //Assert Light = On, Display = Clear,
         }
 
         [Test]
@@ -163,13 +162,14 @@ namespace Microwave.Test.Integrations
             _output.ClearReceivedCalls();
 
 
-            _uut.OnStartCancelPressed(this, EventArgs.Empty);
+            _buttonStartCancel.Press();
 
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Light is turned on")));
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"Display cleared")));
-            //Assert Light = Off, Display = Clear
+
+            //Assert Light = Off, Display = Clear, 
         }
 
 

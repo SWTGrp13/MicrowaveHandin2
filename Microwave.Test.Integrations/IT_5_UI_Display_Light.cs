@@ -61,50 +61,58 @@ namespace Microwave.Test.Integrations
         public void OnStartCancelPressed_SetPower()
         {
             //State to set to COOKING for light to be on first
-            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _uut.OnPowerPressed(this,EventArgs.Empty);
+            _uut.OnTimePressed(this,EventArgs.Empty);
+            _uut.OnStartCancelPressed(this,EventArgs.Empty);
+
 
             _output.ClearReceivedCalls();
 
             //Set state to SETPOWER:
-            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _uut.OnPowerPressed(this, EventArgs.Empty);
 
             _uut.OnStartCancelPressed(this, EventArgs.Empty);
 
             _output.Received().OutputLine(Arg.Is<string>(str => 
                 str.Equals("Light is turned off")));
-            //Assert Light's off
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+            //Assert Light's off & Display clear
         }
 
         [Test]
         public void OnStartCancelPressed_SetTime()
         {
             //Set state to SETTIME
-            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            
+            _uut.OnPowerPressed(this, EventArgs.Empty);
+            _uut.OnTimePressed(this, EventArgs.Empty);
+
             _uut.OnStartCancelPressed(this, EventArgs.Empty);
 
-            _output.Received().OutputLine(Arg.Is<string>(str => 
+            _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals("Light is turned on")));
-            //Assert Light's on
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+            //Assert Light's on & Display clear
         }
 
         [Test]
         public void OnStartCancelPressed_Cooking()
         {
             //Set state to COOKING
-            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
-
-
+            _uut.OnPowerPressed(this, EventArgs.Empty);
+            _uut.OnTimePressed(this, EventArgs.Empty);
             _uut.OnStartCancelPressed(this, EventArgs.Empty);
-            _output.Received().OutputLine(Arg.Is<string>(str => 
-                str.Contains("Light is turned off")));
-            //Assert Light's off
+
+            _output.ClearReceivedCalls();
+
+            _uut.OnStartCancelPressed(this,EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals("Light is turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+            //Assert Light's off & Display clear
         }
         #endregion
 
@@ -115,6 +123,7 @@ namespace Microwave.Test.Integrations
         {
             //State is default READY
             _uut.OnDoorOpened(this, EventArgs.Empty);
+
             _output.Received().OutputLine(Arg.Is<string>(str => str.Equals(
                 $"Light is turned on")));
             //Assert Light's on
@@ -123,31 +132,34 @@ namespace Microwave.Test.Integrations
         public void OnDoorOpened_SetPower()
         {
             //Set state to SETPOWER
-            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _uut.OnPowerPressed(this, EventArgs.Empty);
 
             _output.ClearReceivedCalls();
 
             _uut.OnDoorOpened(this, EventArgs.Empty);
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals(
-                $"Light is turned on")));
-            //Assert Light's on
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals("Light is turned on")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+            //Assert Light's on & Display clear
         }
 
         [Test]
         public void OnDoorOpened_SetTime()
         {
             //Set state to SETTIME
-            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _uut.OnPowerPressed(this, EventArgs.Empty);
+            _uut.OnTimePressed(this, EventArgs.Empty);
            
 
             _output.ClearReceivedCalls();
 
-            _uut.OnDoorOpened(this,EventArgs.Empty);
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals(
-                $"Light is turned on")));
-            //Assert Light's on
+            _uut.OnDoorOpened(this, EventArgs.Empty);
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals("Light is turned on")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+            //Assert Light's on & Display clear
 
         }
 
@@ -158,7 +170,7 @@ namespace Microwave.Test.Integrations
         public void OnDoorClosed_DoorOpen()
         {
             //Set state to DOOROPEN
-            _door.Opened += Raise.EventWith(this, EventArgs.Empty);
+            _uut.OnDoorOpened(this, EventArgs.Empty);
 
 
             _output.ClearReceivedCalls();
@@ -176,22 +188,22 @@ namespace Microwave.Test.Integrations
         {
             
             //Set state to COOKING
-            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
-            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _uut.OnPowerPressed(this, EventArgs.Empty);
+            _uut.OnTimePressed(this, EventArgs.Empty);
+            _uut.OnStartCancelPressed(this,EventArgs.Empty);
             
             
             _output.ClearReceivedCalls();
 
             _uut.CookingIsDone();
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals(
-                    $"Light is turned off")));
-
-
-            //Assert $"Light is turned on"
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals("Light is turned off")));
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+            //Assert Light's off & Display clear
         }
 
-     
+
     }
 
 }
