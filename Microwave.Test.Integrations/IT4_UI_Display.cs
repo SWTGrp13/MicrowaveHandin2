@@ -75,6 +75,39 @@ namespace Microwave.Test.Integrations
                 str.Equals($"Display shows: 100 W")));
             //Assert output Power $"Display shows: {power} W"
         }
+
+
+        [Test]
+        public void OnPowerPressed_SetPowerExtensionOne()
+        {
+            //Set state to SETPOWER:
+            _uut.OnPowerPressed(this, EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display shows: 50 W")));
+
+            _uut.OnStartCancelPressed(this,EventArgs.Empty);
+
+            // display should be clear [EXT.1]
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+        }
+        [Test]
+        public void OnPowerPressed_SetPowerExtensionTwo()
+        {
+            //Set state to SETPOWER:
+            _uut.OnPowerPressed(this, EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display shows: 50 W")));
+
+            _uut.OnDoorOpened(this,EventArgs.Empty);
+
+            // display should be clear [EXT.1]
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Equals($"Display cleared")));
+        }
+
         #endregion
 
         #region TimeButtonPressed
