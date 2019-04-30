@@ -74,6 +74,32 @@ namespace Microwave.Test.Integrations
                 str.Contains($"Display shows: 50 W")));
             //Assert output Power $"Display shows: {power} W"
         }
+
+        [Test]
+        public void OnPowerPressed_SetPowerExtensionOne()
+        {
+            //Set state to SETPOWER:
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Display shows: 50 W")));
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // display should be clear [EXT.1]
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Display cleared")));
+        }
+        [Test]
+        public void OnPowerPressed_SetPowerExtensionTwo()
+        {
+            //Set state to SETPOWER:
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Display shows: 50 W")));
+            _door.Opened += Raise.EventWith(this, EventArgs.Empty);
+            // display should be clear [EXT.1]
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Display cleared")));
+        }
+
         #endregion
 
         #region TimeButtonPressed
@@ -189,7 +215,6 @@ namespace Microwave.Test.Integrations
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
             
-
             _uut.OnDoorOpened(this, EventArgs.Empty);
 
             _output.Received().OutputLine(Arg.Is<string>(str =>
@@ -199,6 +224,34 @@ namespace Microwave.Test.Integrations
 
         #endregion
 
+        [Test]
+        public void OnCookingCancelExtension()
+        {
+            //Set state to COOKING
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _output.ClearReceivedCalls();
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Display cleared")));
+        }
+
+        [Test]
+        public void OnCookingDoorOpenExtension()
+        {
+            //Set state to COOKING
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonTime.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonStartCancel.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _door.Opened += Raise.EventWith(this, EventArgs.Empty);
+
+            _output.Received().OutputLine(Arg.Is<string>(str =>
+                str.Contains($"Display cleared")));
+        }
 
         [Test]
         public void CookingIsDone()
