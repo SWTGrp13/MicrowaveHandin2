@@ -20,7 +20,7 @@ namespace Microwave.Test.Integrations
         private double percentage;
 
         [SetUp]
-        public void sut_initalize()
+        public void sut_initialize()
         {
             // Substitute for Stubs in sut-testcase 3
             _output = Substitute.For<IOutput>();
@@ -37,13 +37,17 @@ namespace Microwave.Test.Integrations
         public void testCookControllerTimeTick(int power, int time)
         {
             ManualResetEvent pause = new ManualResetEvent(false);
-            _uut_cc.StartCooking(power, time);
             percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
+
+            _uut_cc.StartCooking(power, time);
+
+
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"PowerTube works with {percentage} %")));
 
             pause.WaitOne(1050);
             pause.Set();
+
             Assert.That(_time.TimeRemaining, Is.EqualTo(1));
 
             _time.Stop();
@@ -53,9 +57,11 @@ namespace Microwave.Test.Integrations
         [TestCase(350, 2)] //Two senconds
         public void testCookControllerTimeTickDisplay(int power, int time)
         {
-            ManualResetEvent pause = new ManualResetEvent(false);
-            _uut_cc.StartCooking(power, time);
             percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
+            ManualResetEvent pause = new ManualResetEvent(false);
+
+            _uut_cc.StartCooking(power, time);
+           
             _output.Received().OutputLine(Arg.Is<string>(str =>
                 str.Equals($"PowerTube works with {percentage} %")));
 
@@ -68,6 +74,13 @@ namespace Microwave.Test.Integrations
             _time.Stop();
         }
 
+        [TestCase(350, -1500)]
+        public void testCookControllerNegativeTimeThrowsException(int power, int time)
+        {
+            Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Exception);
+
+            _time.Stop();
+        }
 
         [TestCase(350, 5)]//Five Seconds
         public void testCookControllerTimeExpired(int power, int time)
@@ -77,7 +90,7 @@ namespace Microwave.Test.Integrations
             _uut_cc.StartCooking(power, time);
             percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
 
-            pause.WaitOne(((time + 1) * 1000));
+            pause.WaitOne((6000));
             pause.Set();
             _output.Received().OutputLine(Arg.Is<string>(str =>
                  str.Equals($"PowerTube works with {percentage} %")));
@@ -87,13 +100,6 @@ namespace Microwave.Test.Integrations
             _time.Stop();
         }
 
-        [TestCase(350, -1500)]
-        public void testCookControllerNegativeTimeThrowsException(int power, int time)
-        {
-            Assert.That(() => _uut_cc.StartCooking(power, time), Throws.Exception);
-
-            _time.Stop();
-        }
 
         
         [TestCase(350, 2)]

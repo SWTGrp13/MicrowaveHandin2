@@ -39,11 +39,14 @@ namespace Microwave.Test.Integrations
         {
             percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
             _uut_cc.StartCooking(power, time);
+            //StartCooking
 
             _output.Received().OutputLine(Arg.Is<string>( str => 
                 str.Equals($"PowerTube works with {percentage} %")));
 
             _output.ClearReceivedCalls();
+
+            //OnTimerTick 
             _time.TimerTick += Raise.Event();
 
             _output.Received().OutputLine(Arg.Is<string>(str => 
