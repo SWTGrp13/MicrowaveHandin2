@@ -34,22 +34,26 @@ namespace Microwave.Test.Integrations
         }
        
        
-        [TestCase(50, 1000)]
+        [TestCase(50, 1)]
         public void TestCookControllerAndDisplay(int power, int time)
         {
             percentage = Math.Round(((Convert.ToDouble(power) / 700) * 100), 2);
             _uut_cc.StartCooking(power, time);
 
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"PowerTube works with {percentage} %")));
-         
+            _output.Received().OutputLine(Arg.Is<string>( str => 
+                str.Equals($"PowerTube works with {percentage} %")));
+
+            _output.ClearReceivedCalls();
             _time.TimerTick += Raise.Event();
 
-            _output.Received().OutputLine(Arg.Is<string>(str => str.Equals($"Display shows: 00:00")));
+            _output.Received().OutputLine(Arg.Is<string>(str => 
+                str.Equals($"Display shows: 00:00")));
 
+        
         }
 
 
-        [TestCase(70, 2000)]
+        [TestCase(70, 2)]
         public void testCookControllerStop(int power, int time)
         {
             _uut_cc.StartCooking(power, time);
